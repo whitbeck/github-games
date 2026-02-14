@@ -425,7 +425,7 @@
             
             // Update UI
             document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
-            document.getElementById('perUserCost').textContent = '$' + (totalCost / users).toFixed(4);
+            document.getElementById('perUserCost').textContent = users > 0 ? '$' + (totalCost / users).toFixed(4) : '$0.0000';
             document.getElementById('annualCost').textContent = '$' + (totalCost * 12).toFixed(2);
             
             document.getElementById('emailCost').textContent = '$' + emailCost.toFixed(2);
@@ -439,10 +439,10 @@
             document.getElementById('totalBreakdown').textContent = '$' + totalCost.toFixed(2);
             
             // Generate recommendations
-            generateRecommendations(users, emails, totalCost, storageType, emailCost, totalCost);
+            generateRecommendations(users, emails, totalCost, storageType, emailCost);
         }
         
-        function generateRecommendations(users, emails, totalCost, storageType, emailCost, monthlyCost) {
+        function generateRecommendations(users, emails, monthlyCost, storageType, emailCost) {
             const recommendations = [];
             
             // Storage recommendations
@@ -470,7 +470,8 @@
             
             // Revenue model
             const breakEvenUsers = Math.ceil(monthlyCost / 3); // Assuming $3/user
-            recommendations.push(`Break-even point: ~${breakEvenUsers.toLocaleString()} paying users at $3/month (${((breakEvenUsers/users)*100).toFixed(1)}% conversion)`);
+            const conversionRate = users > 0 ? ((breakEvenUsers/users)*100).toFixed(1) : 'N/A';
+            recommendations.push(`Break-even point: ~${breakEvenUsers.toLocaleString()} paying users at $3/month (${conversionRate}% conversion)`);
             
             // Abuse prevention
             if (emails / users > 1000) {
