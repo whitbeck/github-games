@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Alias Service - Cost Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .calculator {
+            padding: 40px;
+        }
+        
+        .input-group {
+            margin-bottom: 30px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 1.1em;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .input-group .hint {
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .slider-container {
+            margin-top: 10px;
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+        
+        .results {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+        
+        .results h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .cost-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .cost-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .cost-card .label {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        
+        .cost-card .value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .cost-breakdown {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .cost-breakdown h3 {
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 2px solid #667eea;
+        }
+        
+        .breakdown-item .name {
+            color: #555;
+        }
+        
+        .breakdown-item .cost {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .recommendations {
+            background: #e8f4f8;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        
+        .recommendations h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .recommendations ul {
+            margin-left: 20px;
+        }
+        
+        .recommendations li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9em;
+        }
+        
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📧 Email Alias Service</h1>
+            <p>Cost Calculator</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="input-group">
+                <label for="users">Number of Users</label>
+                <input type="number" id="users" value="1000" min="10" max="10000000">
+                <div class="hint">Expected number of active users on your platform</div>
+            </div>
+            
+            <div class="input-group">
+                <label for="emails">Emails per Month</label>
+                <input type="number" id="emails" value="100000" min="100" max="1000000000">
+                <div class="hint">Total number of emails to be forwarded monthly</div>
+            </div>
+            
+            <div class="input-group">
+                <label for="avgSize">Average Email Size (KB)</label>
+                <div class="slider-container">
+                    <input type="range" id="avgSize" class="slider" min="10" max="500" value="50">
+                    <div class="hint">Current value: <strong><span id="avgSizeValue">50</span> KB</strong></div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="storage">Store Emails?</label>
+                <select id="storage" style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1.1em;">
+                    <option value="no">No - Forward immediately (recommended)</option>
+                    <option value="temporary">Temporary - 7 days</option>
+                    <option value="permanent">Permanent - Indefinite storage</option>
+                </select>
+                <div class="hint">Email storage impacts costs significantly</div>
+            </div>
+            
+            <div class="results">
+                <h2>💰 Cost Estimate</h2>
+                
+                <div class="cost-summary">
+                    <div class="cost-card">
+                        <div class="label">Monthly Cost</div>
+                        <div class="value" id="totalCost">$0</div>
+                    </div>
+                    <div class="cost-card">
+                        <div class="label">Cost per User</div>
+                        <div class="value" id="perUserCost">$0</div>
+                    </div>
+                    <div class="cost-card">
+                        <div class="label">Annual Cost</div>
+                        <div class="value" id="annualCost">$0</div>
+                    </div>
+                </div>
+                
+                <div class="cost-breakdown">
+                    <h3>Detailed Breakdown</h3>
+                    <div class="breakdown-item">
+                        <span class="name">Email Service (AWS SES)</span>
+                        <span class="cost" id="emailCost">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="name">Application Server</span>
+                        <span class="cost" id="serverCost">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="name">Database</span>
+                        <span class="cost" id="dbCost">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="name">Storage (S3)</span>
+                        <span class="cost" id="storageCost">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="name">DNS & Domain</span>
+                        <span class="cost" id="dnsCost">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="name">Monitoring & Logs</span>
+                        <span class="cost" id="monitoringCost">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="name">Spam Protection</span>
+                        <span class="cost" id="spamCost">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="name">Load Balancer</span>
+                        <span class="cost" id="lbCost">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="name">Total Monthly Cost</span>
+                        <span class="cost" id="totalBreakdown">$0</span>
+                    </div>
+                </div>
+                
+                <div class="recommendations" id="recommendations">
+                    <h3>💡 Recommendations</h3>
+                    <ul id="recommendationsList"></ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Cost estimates based on AWS pricing and industry standards.</p>
+            <p><a href="email-alias-cost-analysis.md">View Detailed Cost Analysis</a> | <a href="index.html">Back to GitHub Games</a></p>
+        </footer>
+    </div>
+    
+    <script>
+        // Get input elements
+        const usersInput = document.getElementById('users');
+        const emailsInput = document.getElementById('emails');
+        const avgSizeInput = document.getElementById('avgSize');
+        const avgSizeValue = document.getElementById('avgSizeValue');
+        const storageInput = document.getElementById('storage');
+        
+        // Update slider value display
+        avgSizeInput.addEventListener('input', function() {
+            avgSizeValue.textContent = this.value;
+            calculateCosts();
+        });
+        
+        // Add event listeners for real-time calculation
+        usersInput.addEventListener('input', calculateCosts);
+        emailsInput.addEventListener('input', calculateCosts);
+        storageInput.addEventListener('change', calculateCosts);
+        
+        function calculateCosts() {
+            const users = parseInt(usersInput.value) || 0;
+            const emails = parseInt(emailsInput.value) || 0;
+            const avgSize = parseInt(avgSizeInput.value) || 50;
+            const storageType = storageInput.value;
+            
+            // Email service cost (AWS SES)
+            // $0.10 per 1,000 emails received + $0.10 per 1,000 emails sent
+            const emailCost = (emails / 1000) * 0.20;
+            
+            // Server cost based on scale
+            let serverCost = 15; // t3.small
+            if (users > 50000 || emails > 5000000) {
+                serverCost = 120; // 2x t3.large
+            } else if (users > 5000 || emails > 500000) {
+                serverCost = 60; // t3.large
+            } else if (users > 1000 || emails > 100000) {
+                serverCost = 30; // t3.medium
+            }
+            
+            // Database cost based on scale
+            let dbCost = 15; // RDS db.t3.micro
+            if (users > 50000) {
+                dbCost = 120; // RDS db.t3.medium
+            } else if (users > 10000) {
+                dbCost = 57; // MongoDB Atlas M10
+            }
+            
+            // Storage cost
+            let storageCost = 0;
+            const emailSizeGB = (emails * avgSize) / (1024 * 1024); // Convert KB to GB
+            
+            if (storageType === 'no') {
+                storageCost = emailSizeGB * 0.023; // Temporary processing storage
+            } else if (storageType === 'temporary') {
+                storageCost = (emailSizeGB * 7) * 0.023; // 7 days of storage
+            } else {
+                storageCost = (emailSizeGB * 365) * 0.023; // Full year storage
+            }
+            
+            // DNS cost
+            const dnsCost = users > 100000 ? 5 : (users > 10000 ? 2 : 1.50);
+            
+            // Monitoring cost
+            let monitoringCost = 5;
+            if (users > 50000) {
+                monitoringCost = 50;
+            } else if (users > 5000) {
+                monitoringCost = 15;
+            }
+            
+            // Spam protection
+            let spamCost = 0;
+            if (emails > 100000) {
+                spamCost = 50;
+            }
+            
+            // Load balancer (only for large scale)
+            let lbCost = 0;
+            if (users > 10000) {
+                lbCost = 20;
+            }
+            
+            // Total cost
+            const totalCost = emailCost + serverCost + dbCost + storageCost + 
+                            dnsCost + monitoringCost + spamCost + lbCost;
+            
+            // Update UI
+            document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
+            document.getElementById('perUserCost').textContent = '$' + (totalCost / users).toFixed(4);
+            document.getElementById('annualCost').textContent = '$' + (totalCost * 12).toFixed(2);
+            
+            document.getElementById('emailCost').textContent = '$' + emailCost.toFixed(2);
+            document.getElementById('serverCost').textContent = '$' + serverCost.toFixed(2);
+            document.getElementById('dbCost').textContent = '$' + dbCost.toFixed(2);
+            document.getElementById('storageCost').textContent = '$' + storageCost.toFixed(2);
+            document.getElementById('dnsCost').textContent = '$' + dnsCost.toFixed(2);
+            document.getElementById('monitoringCost').textContent = '$' + monitoringCost.toFixed(2);
+            document.getElementById('spamCost').textContent = '$' + spamCost.toFixed(2);
+            document.getElementById('lbCost').textContent = '$' + lbCost.toFixed(2);
+            document.getElementById('totalBreakdown').textContent = '$' + totalCost.toFixed(2);
+            
+            // Generate recommendations
+            generateRecommendations(users, emails, totalCost, storageType, emailCost, totalCost);
+        }
+        
+        function generateRecommendations(users, emails, totalCost, storageType, emailCost, monthlyCost) {
+            const recommendations = [];
+            
+            // Storage recommendations
+            if (storageType !== 'no') {
+                recommendations.push('Consider forwarding emails immediately without storage to reduce costs by up to 90%');
+            }
+            
+            // Email cost optimization
+            if (emailCost > monthlyCost * 0.5) {
+                recommendations.push('Email forwarding is your primary cost. Consider batching or rate-limiting to reduce volume');
+            }
+            
+            // Pricing model recommendations
+            const costPerUser = monthlyCost / users;
+            if (costPerUser < 0.10) {
+                recommendations.push(`Your cost per user is $${costPerUser.toFixed(4)}/month. You could charge $3-5/month and maintain healthy margins`);
+            }
+            
+            // Scale recommendations
+            if (users < 1000) {
+                recommendations.push('At this scale, consider using serverless architecture (AWS Lambda) to reduce costs further');
+            } else if (users > 100000) {
+                recommendations.push('Consider using reserved instances to save 30-50% on server and database costs');
+            }
+            
+            // Revenue model
+            const breakEvenUsers = Math.ceil(monthlyCost / 3); // Assuming $3/user
+            recommendations.push(`Break-even point: ~${breakEvenUsers.toLocaleString()} paying users at $3/month (${((breakEvenUsers/users)*100).toFixed(1)}% conversion)`);
+            
+            // Abuse prevention
+            if (emails / users > 1000) {
+                recommendations.push('High email volume per user detected. Implement rate limiting to prevent abuse');
+            }
+            
+            // Update recommendations list
+            const listEl = document.getElementById('recommendationsList');
+            listEl.innerHTML = recommendations.map(r => `<li>${r}</li>`).join('');
+        }
+        
+        // Initial calculation
+        calculateCosts();
+    </script>
+</body>
+</html>
