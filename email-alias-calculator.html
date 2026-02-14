@@ -470,11 +470,15 @@
             
             // Revenue model
             const breakEvenUsers = Math.ceil(monthlyCost / 3); // Assuming $3/user
-            const conversionRate = users > 0 ? ((breakEvenUsers/users)*100).toFixed(1) : 'N/A';
+            let conversionRate = 'N/A';
+            if (users > 0) {
+                const rate = (breakEvenUsers/users)*100;
+                conversionRate = rate > 100 ? '>100' : rate.toFixed(1);
+            }
             recommendations.push(`Break-even point: ~${breakEvenUsers.toLocaleString()} paying users at $3/month (${conversionRate}% conversion)`);
             
             // Abuse prevention
-            if (emails / users > 1000) {
+            if (users > 0 && emails / users > 1000) {
                 recommendations.push('High email volume per user detected. Implement rate limiting to prevent abuse');
             }
             
