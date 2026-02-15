@@ -11,7 +11,7 @@ This Excel spreadsheet helps you track and project your account balances with su
 
 ## File Structure
 
-The spreadsheet contains three main sheets:
+The spreadsheet contains four main sheets:
 
 ### 1. Configuration Sheet
 This sheet contains your initial settings:
@@ -51,17 +51,62 @@ This is the **key to handling expense changes without messing up historical valu
 
 **This approach preserves historical data** - past months show the amounts that were actually in effect at that time.
 
-### 3. Projection Sheet
-This sheet shows your month-by-month account balance projection:
+### 3. Non-Monthly Expenses Sheet
+A dedicated sheet for tracking expenses that occur less frequently than monthly:
+
+**Expense Types:**
+- **Quarterly**: Paid every 3 months (4 times per year)
+  - Example: HOA fees paid in Jan, Apr, Jul, Oct
+- **Semi-Annual**: Paid every 6 months (2 times per year)
+  - Example: Car insurance paid in Jan and Jul
+- **Annual**: Paid once per year
+  - Example: Property tax, Amazon Prime subscription
+- **One-Time**: Single occurrence
+  - Example: New appliance purchase, vacation
+
+**Fields:**
+- Expense Name
+- Amount
+- Frequency (Quarterly, Semi-Annual, Annual, One-Time)
+- First Payment Date
+- Last Payment Date (for recurring; same as first date for one-time)
+- Notes
+
+**Pre-loaded Examples:**
+- HOA Fees: $150 quarterly
+- Car Insurance: $600 semi-annually
+- Property Tax: $2400 annually
+- Amazon Prime: $139 annually
+- Holiday Gifts: $800 annually
+- Car Registration: $180 annually
+
+### 4. Projection Sheet
+This sheet shows your month-by-month account balance projection for **36 months (3 years)**:
 
 **Columns:**
-- **Month**: Sequential month number
+- **Month**: Sequential month number (1-36)
 - **Date**: First day of each month
 - **Income**: Calculated based on bi-weekly salary (2 payments per month)
-- **Recurring Expense Columns**: One column per recurring expense category
-- **Other Expenses**: Manual entry for one-time or unpredicted expenses
-- **Total Expenses**: Sum of all expenses for the month
-- **Balance**: Running balance (previous balance + income - expenses)
+- **Recurring Expense Columns**: 
+  - Xcel Energy
+  - Verizon Wireless
+  - Lawn Mowing
+  - Dog Walking
+  - (Add more columns as needed)
+- **Non-Monthly**: Expenses from the Non-Monthly Expenses sheet
+  - Yellow background for easy identification
+  - Pre-populated with quarterly, semi-annual, and annual expenses
+- **Other Expenses**: Manual entry for unpredicted expenses
+  - Green background for easy identification
+- **Total Recurring**: Sum of monthly recurring expenses only
+- **Total Expenses**: Sum of all expenses (recurring + non-monthly + other)
+- **Balance**: Running balance (previous balance + income - total expenses)
+
+**Visual Aids:**
+- Every 3rd month has a subtle gray background for easier reading
+- Yellow cells indicate non-monthly expenses
+- Green cells indicate manual entry fields
+- Bold formatting on totals and balance
 
 ## How to Use
 
@@ -88,9 +133,33 @@ When an expense changes (like the examples in the problem statement):
 
 ### Adding Non-Monthly Expenses
 For quarterly, semi-annual, or annual expenses:
-1. Add them to the **Expense History** sheet
-2. Set the Frequency to: Quarterly, Semi-Annual, or Annual
-3. The projection will account for these less frequent charges
+1. Go to the **Non-Monthly Expenses** sheet
+2. Add a row with:
+   - Expense name
+   - Amount
+   - Frequency (Quarterly, Semi-Annual, or Annual)
+   - First payment date
+   - Last payment date (when this expense will stop)
+   - Optional notes
+3. The amounts will automatically appear in the **Projection** sheet on the appropriate months
+
+**Quarterly Example (HOA Fees):**
+- Amount: $150
+- Frequency: Quarterly
+- First Payment: 2026-01-01
+- Months charged: Jan, Apr, Jul, Oct (and repeating)
+
+**Semi-Annual Example (Car Insurance):**
+- Amount: $600
+- Frequency: Semi-Annual
+- First Payment: 2026-01-01
+- Months charged: Jan, Jul (and repeating)
+
+**Annual Example (Property Tax):**
+- Amount: $2,400
+- Frequency: Annual
+- First Payment: 2026-04-01
+- Months charged: April each year
 
 ### Manual Adjustments
 Use the **Other Expenses** column in the **Projection** sheet for:
